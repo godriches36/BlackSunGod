@@ -1,0 +1,77 @@
+import { BigInt, log } from "@graphprotocol/graph-ts"
+import {
+  Deposited,
+  Withdrawn,
+  YieldHarvested,
+  SecurityAuditTriggered
+} from "../generated/YieldVault/YieldVault"
+import { 
+  VaultDeposit, 
+  VaultWithdrawal, 
+  TreasuryState, 
+  StablecoinSupply 
+} from "../generated/schema"
+
+/**
+ * @notice Handler for User Deposits into the Agbon Yield Vault.
+ * This is where the 3D wealth is converted into 5D yielding power.
+ */
+export function handleDeposited(event: Deposited): void {
+  // Use Transaction Hash + Log Index as a unique Military ID
+  let id = event.transaction.hash.concatI32(event.logIndex.toI32())
+  let deposit = new VaultDeposit(id)
+
+  deposit.user = event.params.user
+  deposit.amount = event.params.amount
+  deposit.shares = event.params.shares
+  deposit.timestamp = event.block.timestamp
+  deposit.blockNumber = event.block.number
+  
+  // Track that this is a "Red Black" Earth Seed transaction
+  log.info("Wealth Anchor: User {} deposited {} into the Agbon Vault.", [
+    event.params.user.toHexString(),
+    event.params.amount.toString()
+  ])
+
+  deposit.save()
+
+  // Update Global Treasury State
+  let treasury = TreasuryState.load("GLOBAL_TREASURY")
+  if (treasury == null) {
+    treasury = new TreasuryState("GLOBAL_TREASURY")
+    treasury.totalLockedValue = BigInt.fromI32(0)
+  }
+  treasury.totalLockedValue = treasury.totalLockedValue.plus(event.params.amount)
+  treasury.save()
+}
+
+/**
+ * @notice Handler for Yield Harvesting.
+ * This tracks the 'Riches' (Universal Love/Wisdom) being generated.
+ */
+export function handleYieldHarvested(event: YieldHarvested): void {
+  let id = event.transaction.hash.concatI32(event.logIndex.toI32())
+  let harvest = new VaultHarvest(id)
+
+  harvest.amount = event.params.amount
+  harvest.strategy = event.params.strategy // e.g., "Lido-Staking-6/9"
+  harvest.timestamp = event.block.timestamp
+  
+  log.warning("Cosmic Flow Detected: Yield of {} harvested to Treasury.", [
+    event.params.amount.toString()
+  ])
+
+  harvest.save()
+}
+
+/**
+ * @notice Security Monitoring: The 7th Layer Defense.
+ * Responds to security alerts triggered within the contract.
+ */
+export function handleSecurityAuditTriggered(event: SecurityAuditTriggered): void {
+  log.critical("SECURITY BREACH ATTEMPT: System protected by Black Sun Warrior Code. Event: {}", [
+    event.params.reason
+  ])
+  // In a real system, your frontend would listen to this and 'Pause' UI interactions
+}
+
