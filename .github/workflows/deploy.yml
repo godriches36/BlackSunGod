@@ -1,0 +1,20 @@
+name: Ship Sovereign Engine
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Allows manual triggering if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Publish Worker and Workflows Engine
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: "730e7fbef6b1166b47f3877e3bb6688a"
+          
