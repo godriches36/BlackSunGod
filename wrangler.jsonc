@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anbsn-engine",
+  "main": "src/index.ts", // or your main entry script path
+  "compatibility_date": "2026-07-21",
+  "workflows": [
+    {
+      "name": "anbsn-global-workflow",
+      "binding": "MY_WORKFLOW",
+      "class_name": "MyWorkflow"
+    }
+  ]
+}
+
