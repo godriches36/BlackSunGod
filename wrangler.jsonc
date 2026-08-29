@@ -1,14 +1,21 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "anbsn-engine",
-  "main": "src/index.ts", // or your main entry script path
-  "compatibility_date": "2026-07-21",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "anbsn-sovereign-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-29",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NETWORK": "ethereum-mainnet",
+    "CHAIN_ID": "1",
+    "ALIGNMENT_FREQUENCY": "1.25T_NAIRA_INVERSION"
+  },
   "workflows": [
     {
-      "name": "anbsn-global-workflow",
-      "binding": "MY_WORKFLOW",
-      "class_name": "MyWorkflow"
+      "name": "sovereign-sync-workflow",
+      "binding": "SOVEREIGN_WORKFLOW",
+      "class_name": "SovereignSyncWorkflow"
     }
   ]
 }
-
